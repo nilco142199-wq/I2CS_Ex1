@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *  * Introduction to Computer Science 2026, Ariel University,
  *  * Ex1: arrays, static functions and JUnit
  *
- * This JUnit class represents a JUnit (unit testing) for Ex1-
+ * This JUnit class  represents a JUnit (unit testing) for Ex1-
  * It contains few testing functions for the polynomial functions as define in Ex1.
  * Note: you should add additional JUnit testing functions to this class.
  *

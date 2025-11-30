@@ -408,7 +408,7 @@ public class Ex1 {
 		double [] ans = ZERO;//
         /** add you code below
 
-         /////////////////// */
+         /////////////////// /*/
         if (po.length <= 1) { return ZERO; } //if the polys iszero or has only constant term its zero
         ans = new double[po.length -1]; //initialize result array derivaive has degree=original degree-1
         for (int i =1; i<po.length;i++) { //loop over coefficients starting for x^1 {skipping x^0)
