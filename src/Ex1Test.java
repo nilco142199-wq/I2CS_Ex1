@@ -189,7 +189,103 @@ class Ex1Test {
 		assertEquals(a3,area, Ex1.EPS);
 		assertEquals(a100,area, Ex1.EPS);
 	}
-	@Test
+    ///  //////////////// my own test's
+    @Test
+    public void testequals() {  // FIRST TEST
+        double[] p1 = {2, 5, 7};  // 3x^2 5x +7
+        double[] p2 = {2, 5, 7};  //same
+        assertTrue(Ex1.equals(p1, p2));  //need to be true
+
+    }
+    @Test
+    void testEqualsDifferentLengthPolynomials() { //SECOND TEST
+        double[] p1 = {1, 2, 3};   // 3x^2 +2x+1
+        double[] p2 = {1, 2, 3, 0}; // "" "" ""
+        assertTrue(Ex1.equals(p1, p2)); //should be true
+    }
+    @Test
+    void testSameValueSimple() { //THIRD TEST
+        double[] p1 = {0, 1}; // f(x) = x
+        double[] p2 = {2};    // f(x) = 2
+        double x = Ex1.sameValue(p1, p2, 0, 3, Ex1.EPS);
+        // poly's are equal at x=2
+        assertEquals(2.0, x, Ex1.EPS);
+    }
+    @Test
+    void testArea5() { //Test number 4
+        double[] p1 = {0, 1}; // f(x) = x
+        double[] p2 = {0};    // f(x) = 0
+        double area = Ex1.area(p1, p2, 0, 2, 100); // the area between them is 2*2*0.5
+        assertEquals(2.0, area, Ex1.EPS);
+    }
+    @Test
+    void testDerivativeSimple() { //test number 5
+        double[] p = {2, 3, 4}; // f(x) = 4x^2 + 3x + 2
+        double[] expected = {3, 8}; // f'(x) = 8x + 3
+        double[] result = Ex1.derivative(p);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testDerivativeConstant() {  //Test number 6
+        double[] p = {5}; // f(x) = 5
+        double[] expected = {0}; // f'(x) = 0
+        double[] result = Ex1.derivative(p);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testAddSimple() {   //Test number 7
+        double[] p1 = {1, 2}; // f(x) = 2x + 1
+        double[] p2 = {3, 4, 5}; // f(x) = 5x^2 + 4x + 3
+        double[] expected = {4, 6, 5}; // f(x) = 5x^2 + 6x + 4
+        double[] result = Ex1.add(p1, p2);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testAddWithZero() { //Test number 8
+        double[] p1 = {0}; // f(x) = 0
+        double[] p2 = {2, -1}; // f(x) = -x + 2
+        double[] expected = {2, -1};  //excepted -x +2
+        double[] result = Ex1.add(p1, p2);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testMulSimple() { //Test number 9
+        double[] p1 = {1, 2}; // f(x) = 2x + 1
+        double[] p2 = {3, 4}; // f(x) = 4x + 3
+        double[] expected = {3, 10, 8}; // f(x) = 8x^2 + 10x + 3
+        double[] result = Ex1.mul(p1, p2);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testAddWithZero2() { //Test number 10, chacking with zero's again but with higher number's
+        double[] p1 = {0}; // f(x) = 0
+        double[] p2 = {51, 1}; // f(x) = x + 5
+        double[] expected = {51, 1};
+        double[] result = Ex1.add(p1, p2);
+        assertArrayEquals(expected, result, Ex1.EPS);
+    }
+    @Test
+    void testPolyWithX() {  //Test number 11
+        double[] p = {0, 1}; // f(x) = x
+        String expected = "1.0x";
+        String result = Ex1.poly(p);
+        assertEquals(expected, result);
+    }
+    @Test
+    void testPolyLinearOne() {  //Test number 12
+        double[] p = {0, 1}; // f(x) = x
+        String expected = "1.0x";
+        String result = Ex1.poly(p);
+        assertEquals(expected, result);
+    }
+    @Test
+    void testPolyLinearMinusOne() { //Test number 13
+        double[] p = {0, -1}; // f(x) = -x
+        String expected = "-1.0x";
+        String result = Ex1.poly(p);
+        assertEquals(expected, result);
+    }
+    @Test
 	/**
 	 * Test the area function.
 	 */

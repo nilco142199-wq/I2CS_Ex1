@@ -239,24 +239,28 @@ public class Ex1 {
 	 * @return the approximated area between the two polynomial functions within the [x1,x2] range.
 	 */
 	public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
-		double ans = 0;
+		double ans = 0.0;
         /** add you code below
 
          /////////////////// */
-        double areaSum = 0;
-        double dx = (x2-x1) / numberOfTrapezoid;  //width of each trapez
-        double prevX = x1;  //starting value for x
-        Double prevY = Math.abs(f(p1,prevX)-f(p2,prevX));  //the absolute vertical distance between the functions at x1
-        for (int i=1; i <= numberOfTrapezoid; i++) {
-            double currX = prevX + dx;  // the next x position
-            double currY = Math.abs(f(p1, currX) - f(p2, currX));  // the vertical distance at the next point
-            double trapezoidArea = (prevY + currY) * 0.5 * dx;  //the area of trapez is (h1+h2)/2 *dx
-            areaSum += trapezoidArea;  //accumulate area
-            prevX = currX;  // update the previous values for the next literation
+        if (x1 ==x2)return 0.00;
+        if(x1>x2) {
+            double temp =x1;
+            x1=x2;
+            x2=temp; }
+        int N =numberOfTrapezoid* 50;
+        double dx = (x2-x1) / N;
+        double prevX = x1;
+        double prevY = Math.abs(f(p1,x1) - f(p2,x1));
+        double sum= 0;
+        for (int i =1; i<=N; i++) {
+            double currX = prevX + dx;
+            double currY = Math.abs(f(p1, currX) - f(p2, currX));
+            sum += (currY + prevY) * 0.5 * dx;
+            prevX = currX;
             prevY = currY;
         }
-        ans = areaSum;
-		return ans;
+		return sum;
 	}
 	/**
 	 * This function computes the array representation of a polynomial function from a String
@@ -271,57 +275,92 @@ public class Ex1 {
         /** add you code below
 
          /////////////////// */
-        if (p == null || p.length() == 0) {   // if the string is empty return zero
+
+            if (p == null || p.length() == 0) return ans;
+
+            // removing all spaces
+            p = p.replace(" ", "");
+
+            // making sure the string start with +/-
+            if (p.charAt(0) != '+' && p.charAt(0) != '-') {
+                p = "+" + p;
+            }
+
+            // repalce "-" with "+-" so we can split easily
+            p = p.replace("-", "+-");
+
+            //  splitting into terms
+            String[] parts = p.split("\\+");
+
+            // first find highest power
+            int maxPow = 0;
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].equals("")) continue;
+                int pow = getPower(parts[i]);
+                if (pow > maxPow) maxPow = pow;
+            }
+
+            // allocate polynomial array
+            ans = new double[maxPow + 1];
+
+            // fill coefficients
+            for (int i = 0; i < parts.length; i++) {
+                String term = parts[i];
+                if (term.equals("")) continue;
+
+                double coef = getCoefficient(term);  // a
+                int pow = getPower(term);            // b
+
+                ans[pow] += coef;
+            }
+
             return ans;
         }
-        p = p.replace("",""); // cleaning all spaces
-        if (p.charAt(0) != '+' && p.charAt(0) != '-') {   //if the string doesnt start with + or - add '+'
-            p = "+" + p; }
-        p = p.replace("-","+");  //replace all '-' with '+-' so split works easily
-        String [] parts = p.split("\\+");
-        int maxPow = 0;   //finding the highest power
-        for (String term : parts) {
-            if (term.equals("")) continue;  //skip empty terms
-            int power;
-            if (term.contains("x^")) {
-                power = Integer.parseInt(term.substring(term.indexOf("^") + 1));
-            } else if (term.contains("x^")) {
-                power = 1;
-            } else {
-                power = 0;
-            }
-            if (power > maxPow) {
-                maxPow = power;
-            }
+
+    private static double getCoefficient(String term) {
+        // remove all spaces
+        term = term.replace(" ", "");
+
+        // case: x^n or x
+        if (term.contains("x")) {
+            int xPos = term.indexOf("x");
+            String c = term.substring(0, xPos);
+
+            if (c.equals("") || c.equals("+")) return 1;
+            if (c.equals("-")) return -1;
+            return Double.parseDouble(c);
         }
-        ans = new double [maxPow +1];   //create the result
-        for(String term : parts) {
-            if (term.equals("")) continue;   //filling the coefficients
-            double coef;
-            int power;
-            if (term.contains("x^")) {
-                int xPos = term.indexOf("x");
-                String c = term.substring(0,xPos);
-                if (c.equals("") || c.equals("+")) coef = 1;
-                else if (c.equals("-")) coef = -1;
-                else coef = Double.parseDouble(c);  //if its a normal number
-                power = Integer.parseInt(term.substring(term.indexOf("^") + 1));
-            } else if (term.contains("x")) {
-                int xPos = term.indexOf("x"); //find the position of x
-                String c = term.substring(0, xPos);   //substring before x is the coefficient
-                if (c.equals("") || c.equals("+")) coef = 1;   //+x =1
-                else if (c.equals("-")) coef = -1;  //-x =-1
-                else coef = Double.parseDouble(c);  //normal number
-                power = 1;  //no "^" so expo =1
-            } else {
-                coef = Double.parseDouble(term);
-                power = 0;
-            }
-            ans[power] += coef;   //add coefficient to correct degree
+
+        // constant number
+        return Double.parseDouble(term);
+    }
+
+    private static int getPower(String term) {
+        term = term.replace(" ", ""); // remove spaces
+
+        if (!term.contains("x")) {
+            return 0; // constant term
         }
-		return ans;
-	}
-	/**
+
+        int xPos = term.indexOf("x");
+
+        // x is at the end → power = 1 (like "x", "-x", "3x")
+        if (xPos == term.length() - 1) {
+            return 1;
+        }
+
+        // check for ^ format: x^2
+        if (term.charAt(xPos + 1) == '^') {
+            String powStr = term.substring(xPos + 2); // after "^"
+            return Integer.parseInt(powStr);
+        }
+
+        // default format: x2 (after x digits only)
+        String powStr = term.substring(xPos + 1);
+        return Integer.parseInt(powStr);
+    }
+
+    /**
 	 * This function computes the polynomial function which is the sum of two polynomial functions (p1,p2)
 	 * @param p1
 	 * @param p2
